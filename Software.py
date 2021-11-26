@@ -61,7 +61,7 @@ def lectura_archivo():
         AprobacionCa()
         #CasosCriticosyAbandono
         CasosCriticos()
-
+  
         #Promedio por grupo, materia...
         st.subheader("PROMEDIOS: ")
         ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
@@ -916,6 +916,7 @@ def AprobacionCa():
     st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN POR CARRERA")
     cr = pd.concat([carrera1, carrera1R, carrera2,  carrera2R, carrera3, carrera3R, carrerafin, carreraFinR], axis=1)
     cr
+    
 
 def CasosCriticos():
     Fin=datos.loc[datos['FIN']<=5]
@@ -923,57 +924,50 @@ def CasosCriticos():
     CasosC=[]
     CasosA = []
 
-    for i in range(0, len(Fin)):
-        numeroControl = Fin['Número de control'].unique()
-    
-    for i in range (0, len(numeroControl)):
-        CasoCritico=Fin.loc[Fin['Número de control'] == numeroControl[i]]
+    if Fin.empty:
+        print("")
+    else:
+        for i in range(0, len(Fin)):
+            numeroControl = Fin['Número de control'].unique()
+        
+        for i in range (0, len(numeroControl)):
+            CasoCritico=Fin.loc[Fin['Número de control'] == numeroControl[i]]
 
-        if 3 <= len(CasoCritico) < 5:
-            CasosC.append(CasoCritico)
-        elif len(CasoCritico) >= 5:
-            CasosA.append(CasoCritico)
+            if 3 <= len(CasoCritico) < 5:
+                CasosC.append(CasoCritico)
+            elif len(CasoCritico) >= 5:
+                CasosA.append(CasoCritico)
 
-#############################################Critico
-    critico = pd.concat(CasosC, sort=False)
+    #############################################Critico
+        critico = pd.concat(CasosC, sort=False)
 
-    for i in range (0, len(critico)):
-        nombres=critico['Nombre(s)'].unique()
-        cuenta = critico['Número de control'].unique()
-    
-    rf = pd.DataFrame(data = nombres)
-    rc = pd.DataFrame(data=cuenta)
-    rc.rename(columns={0:'Número de control'}, inplace=True)
-    rf.rename(columns={0:'Nombre'}, inplace=True)
-    lista1 = [rf, rc]
-    caso1 = pd.concat(lista1, axis=1)
-    caso1
-    critico
-
-###############################Abandono
-    abandono = pd.concat(CasosA, sort = False)
-    for i in range (0, len(abandono)):
-        nombres=abandono['Nombre(s)'].unique()
-        cuenta = abandono['Número de control'].unique()
-    
-    rf2 = pd.DataFrame(data = nombres)
-    rc2 = pd.DataFrame(data=cuenta)
-    rc2.rename(columns={0:'Número de control'}, inplace=True)
-    rf2.rename(columns={0:'Nombre'}, inplace=True)
-    lista2 = [rf2, rc2]
-    caso2 = pd.concat(lista2, axis=1)
-
-
-    caso2
-    
-    abandono
-
-
-
-
-
-
-
+        for i in range (0, len(critico)):
+            nombres=critico['Nombre(s)'].unique()
+            cuenta = critico['Número de control'].unique()
+        
+        rf = pd.DataFrame(data = nombres)
+        rc = pd.DataFrame(data=cuenta)
+        rc.rename(columns={0:'Número de control'}, inplace=True)
+        rf.rename(columns={0:'Nombre'}, inplace=True)
+        lista1 = [rf, rc]
+        caso1 = pd.concat(lista1, axis=1)
+        caso1
+        critico
+    ###############################Abandono
+        abandono = pd.concat(CasosA, sort = False)
+        for i in range (0, len(abandono)):
+            nombres=abandono['Nombre(s)'].unique()
+            cuenta = abandono['Número de control'].unique()
+        
+        rf2 = pd.DataFrame(data = nombres)
+        rc2 = pd.DataFrame(data=cuenta)
+        rc2.rename(columns={0:'Número de control'}, inplace=True)
+        rf2.rename(columns={0:'Nombre'}, inplace=True)
+        lista2 = [rf2, rc2]
+        caso2 = pd.concat(lista2, axis=1)
+        caso2
+        
+        abandono
 
 #FUNCION PRINCIPAL        
 seguridad()
