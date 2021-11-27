@@ -58,7 +58,7 @@ def acceder():
         create_usertable()
         result = login_user(username,password)
         if result:
-                st.success("Te has logeado como: {}".format(username))                          
+                st.success("Te has logeado como: {}".format(username))                      
                 lectura_archivo()
         else:
                 st.warning("Incorrecto Nombre de usuario/Contraseña")
@@ -69,6 +69,7 @@ def acceder():
         if st.checkbox("Cambiar"):
             change_password(new_pass,user) 
             st.success("Se cambio su contraseña")
+    
 
 #SIGN UP
 def sign():
@@ -842,6 +843,7 @@ def CasosCriticos():
         rf.rename(columns={0:'Nombre'}, inplace=True)
         lista1 = [rf, rc]
         caso1 = pd.concat(lista1, axis=1)
+        st.subheader("CASOS CRITICOS")
         caso1
         critico
 
@@ -856,6 +858,7 @@ def CasosCriticos():
         rf2.rename(columns={0:'Nombre'}, inplace=True)
         lista2 = [rf2, rc2]
         caso2 = pd.concat(lista2, axis=1)
+        st.subheader("CASOS DE ABANDONO")
         caso2
         
         abandono
@@ -893,6 +896,7 @@ def lectura_archivo():
     global cols_num
     try:
         st.write(datos)
+        opciones()
     except Exception as e:
         print(e)
         st.write("Porfavor suba su archivo a la aplicación")
@@ -977,24 +981,6 @@ def opciones():
             except Exception as e:
                 print(e)
                 st.write("Porfavor elija una opción adecuada")
-#COLOR
-def color_negative_red(value):
-  """
-  Colors elements in a dateframe
-  green if positive and red if
-  negative. Does not color NaN
-  values.
-  """
-
-  if value == 5:
-    color = 'red'
-  elif value > 5:
-    Ncuenta.drop(columns="P1") 
-    color = 'green'
-  else:
-    color = 'black'
-
-  return 'color: %s' % color
 
 #GRAFICO TURNO MATUTINO
 def graficoMat():
@@ -1023,4 +1009,4 @@ def graficoVesp():
 
 #DESPLIEGE DEL PROGRAMA
 menu()
-opciones()
+#opciones()
