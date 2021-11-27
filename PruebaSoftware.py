@@ -818,7 +818,7 @@ def CasosCriticos():
     CasosA = []
 
     if Fin.empty:
-        print("")
+        st.warning('No hay calificaciones en la columna FIN')
     else:
         for i in range(0, len(Fin)):
             numeroControl = Fin['Número de control'].unique()
