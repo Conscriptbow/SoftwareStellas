@@ -815,10 +815,9 @@ def CasosCriticos():
     Fin=datos.loc[datos['FIN']<=5]
 
     CasosC=[]
-    CasosA = []
 
     if Fin.empty:
-        st.warning('No hay calificaciones en la columna FIN')
+        print("")
     else:
         for i in range(0, len(Fin)):
             numeroControl = Fin['Número de control'].unique()
@@ -828,8 +827,6 @@ def CasosCriticos():
 
             if 3 <= len(CasoCritico) < 5:
                 CasosC.append(CasoCritico)
-            elif len(CasoCritico) >= 5:
-                CasosA.append(CasoCritico)
 
         critico = pd.concat(CasosC, sort=False)
 
@@ -847,6 +844,22 @@ def CasosCriticos():
         caso1
         critico
 
+#CASOS DE ABANDONO
+def CasosAbandono(): 
+    Fin=datos.loc[datos['FIN']<=5]
+    CasosA = []
+    if Fin.empty:
+        print("")
+    else:
+        for i in range(0, len(Fin)):
+            numeroControl = Fin['Número de control'].unique()
+        
+        for i in range (0, len(numeroControl)):
+            CasoCritico=Fin.loc[Fin['Número de control'] == numeroControl[i]]
+
+            if len(CasoCritico) >= 5:
+                CasosA.append(CasoCritico)
+
         abandono = pd.concat(CasosA, sort = False)
         for i in range (0, len(abandono)):
             nombres=abandono['Nombre(s)'].unique()
@@ -862,6 +875,7 @@ def CasosCriticos():
         caso2
         
         abandono
+
 
 #FILTRO DATOS
 def filtro():
@@ -903,7 +917,7 @@ def lectura_archivo():
 
 #SUB MENU
 def opciones():
-    menu = st.radio("",("Filtro", "Turno Matutino", "Turno Vespertino", "Promedios","Casos críticos","Aprobación y reprobación"))
+    menu = st.radio("",("Filtro", "Turno Matutino", "Turno Vespertino", "Promedios","Casos críticos","Casos de abandono","Aprobación y reprobación"))
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     st.markdown('---')
     if menu == 'Filtro':
@@ -965,6 +979,8 @@ def opciones():
             ndf
     elif menu =='Casos críticos':
             CasosCriticos()
+    elif menu == 'Casos de abandono':
+            CasosAbandono()
     elif menu =='Aprobación y reprobación':
             st.subheader("Indice de aprobación y reprobación: ")
             opcion = ["Plantel", "Turno", "Asignatura", "Profesor"]
