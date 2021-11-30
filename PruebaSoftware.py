@@ -1,3 +1,4 @@
+from ast import increment_lineno
 import time
 import streamlit as st
 import plotly_express as px
@@ -7,7 +8,10 @@ import numpy as np
 from streamlit.state.session_state import WidgetArgs
 import plotly.graph_objects as go
 import altair as alt
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
 
@@ -194,8 +198,168 @@ def AprobacionP():
     st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN POR PLANTEL")
     pf = pd.concat([plantel, plantelR, plantel2, plantelR2, plantel3, plantelR3, plantelFin, plantelRFin], axis=1)
     pf
+    st.bar_chart(pf['APROBACIÓN P1(%)'])
+    st.bar_chart(pf['REPROBACIÓN P1 (%)'])
+    st.bar_chart(pf['APROBACIÓN P2(%)'])
+    st.bar_chart(pf['REPROBACIÓN P2 (%)'])
+    st.bar_chart(pf['APROBACIÓN P3(%)'])
+    st.bar_chart(pf['REPROBACIÓN P3 (%)'])
+    st.bar_chart(pf['APROBACIÓN FIN(%)'])
+    st.bar_chart(pf['REPROBACIÓN FIN (%)'])
 
-#INDICE APROBACIÓN Y REPROBACIÓN (MATUTINO Y VESPERTINO)
+#INDICE APROBACION Y REPROBACION (VESPERTINO)
+def AprobacionGT():
+    a=104
+    frames2 = []
+    for i in range(0,6):
+        if a == 108:
+            a=204
+        elif a == 208:
+            a=304
+        elif a == 308:
+             a=404
+        elif a == 408:
+            a=504
+        elif a==508:
+            a=604
+        for j in range(0,4):
+            a = a + 1
+            grupoTarde = datos.loc[datos['Grupo'] == a]
+            frames2.append(grupoTarde)
+
+    indiceTarde = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P1']>=6]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTarde.append(porcentaje)
+
+    tarde=pd.DataFrame(data=indiceTarde)
+    tarde.rename(columns={0:'APROBACIÓN P1(%)'}, inplace=True)
+
+    pruebast = []
+    for i in range(0, len(frames2)):
+        if frames2[i].empty:
+            continue
+        pruebas = frames2[i]['Grupo'].unique()
+        pruebast.append(pruebas)
+
+    for i in range (0, len(tarde)):
+        tarde.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeP2 = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P2']>=6]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeP2.append(porcentaje)
+
+    tardeP2=pd.DataFrame(data=indiceTardeP2)
+    tardeP2.rename(columns={0:'APROBACIÓN P2(%)'}, inplace=True)
+
+    for i in range (0, len(tarde)):
+        tardeP2.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeP3 = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P3']>=6]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeP3.append(porcentaje)
+
+    tardeP3=pd.DataFrame(data=indiceTardeP3)
+    tardeP3.rename(columns={0:'APROBACIÓN P3(%)'}, inplace=True)
+
+    for i in range (0, len(tardeP3)):
+        tardeP3.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeFin = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['FIN']>=6]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeFin.append(porcentaje)
+
+    tardeFin=pd.DataFrame(data=indiceTardeFin)
+    tardeFin.rename(columns={0:'APROBACIÓN FIN(%)'}, inplace=True)
+
+    for i in range (0, len(tarde)):
+        tardeFin.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeR = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P1']<=5]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeR.append(porcentaje)
+
+    tardeR=pd.DataFrame(data=indiceTardeR)
+    tardeR.rename(columns={0:'REPROBACIÓN P1(%)'}, inplace=True)
+
+    for i in range (0, len(tarde)):
+        tardeR.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeR2 = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P2']<=5]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeR2.append(porcentaje)
+
+    tardeR2=pd.DataFrame(data=indiceTardeR2)
+    tardeR2.rename(columns={0:'REPROBACIÓN P2(%)'}, inplace=True)
+
+    for i in range (0, len(tarde)):
+        tardeR2.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeR3 = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P3']<=5]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeR3.append(porcentaje)
+
+    tardeR3=pd.DataFrame(data=indiceTardeR3)
+    tardeR3.rename(columns={0:'REPROBACIÓN P3(%)'}, inplace=True)
+
+    for i in range (0, len(tardeR3)):
+        tardeR3.rename(index={i:int(pruebast[i])}, inplace=True)
+
+    indiceTardeRFin = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['FIN']<=5]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTardeRFin.append(porcentaje)
+
+    tardeRFin=pd.DataFrame(data=indiceTardeRFin)
+    tardeRFin.rename(columns={0:'REPROBACIÓN FIN(%)'}, inplace=True)
+
+    for i in range (0, len(tardeRFin)):
+        tardeRFin.rename(index={i:int(pruebast[i])}, inplace=True)
+    
+    st.subheader("INDICE DE APROBACIÓN Y REPROBRACIÓN VESPERTINO")
+    dc = pd.concat([tarde, tardeR, tardeP2, tardeR2, tardeP3, tardeR3, tardeFin, tardeRFin], axis=1)
+    dc
+
+    st.bar_chart(dc['APROBACIÓN P1(%)'])
+    st.bar_chart(dc['REPROBACIÓN P1(%)'])
+    st.bar_chart(dc['APROBACIÓN P2(%)'])
+    st.bar_chart(dc['REPROBACIÓN P2(%)'])
+    st.bar_chart(dc['APROBACIÓN P3(%)'])
+    st.bar_chart(dc['REPROBACIÓN P3(%)'])
+    st.bar_chart(dc['APROBACIÓN FIN(%)'])
+    st.bar_chart(dc['REPROBACIÓN FIN(%)'])
+
+#INDICE APROBACIÓN Y REPROBACIÓN (MATUTINO)
 def AprobacionG():
     a=100
     frames = [] 
@@ -214,24 +378,6 @@ def AprobacionG():
             a = a + 1
             grupoMatutino = datos.loc[datos['Grupo'] == a]
             frames.append(grupoMatutino)
-            
-    a=104
-    frames2 = []
-    for i in range(0,6):
-        if a == 108:
-            a=204
-        elif a == 208:
-            a=304
-        elif a == 308:
-             a=404
-        elif a == 408:
-            a=504
-        elif a==508:
-            a=604
-        for j in range(0,4):
-            a = a + 1
-            grupoTarde = datos.loc[datos['Grupo'] == a]
-            frames2.append(grupoTarde)
 
     indiceMañana = []
     for i in range(0, len(frames)):
@@ -294,69 +440,6 @@ def AprobacionG():
     for i in range (0, len(mañanafin)):
         mañanafin.rename(index={i:int(pruebasm[i])}, inplace=True)
 
-    indiceTarde = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P1']>=6]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTarde.append(porcentaje)
-
-    tarde=pd.DataFrame(data=indiceTarde)
-    tarde.rename(columns={0:'APROBACIÓN P1(%)'}, inplace=True)
-
-    pruebast = []
-    for i in range(0, len(frames2)):
-        if frames2[i].empty:
-            continue
-        pruebas = frames2[i]['Grupo'].unique()
-        pruebast.append(pruebas)
-
-    for i in range (0, len(tarde)):
-        tarde.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeP2 = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P2']>=6]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeP2.append(porcentaje)
-
-    tardeP2=pd.DataFrame(data=indiceTardeP2)
-    tardeP2.rename(columns={0:'APROBACIÓN P2(%)'}, inplace=True)
-
-    for i in range (0, len(tarde)):
-        tardeP2.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeP3 = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P3']>=6]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeP3.append(porcentaje)
-
-    tardeP3=pd.DataFrame(data=indiceTardeP3)
-    tardeP3.rename(columns={0:'APROBACIÓN P3(%)'}, inplace=True)
-
-    for i in range (0, len(tardeP3)):
-        tardeP3.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeFin = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['FIN']>=6]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeFin.append(porcentaje)
-
-    tardeFin=pd.DataFrame(data=indiceTardeFin)
-    tardeFin.rename(columns={0:'APROBACIÓN Fin(%)'}, inplace=True)
-
-    for i in range (0, len(tarde)):
-        tardeFin.rename(index={i:int(pruebast[i])}, inplace=True)
-
     indiceMañanaR = []
     for i in range(0, len(frames)):
         primerGrupo=frames[i].loc[frames[i]['P1']<=5]
@@ -413,68 +496,18 @@ def AprobacionG():
     for i in range (0, len(mañanaRFin)):
         mañanaRFin.rename(index={i:int(pruebasm[i])}, inplace=True)
 
-    indiceTardeR = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P1']<=5]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeR.append(porcentaje)
-
-    tardeR=pd.DataFrame(data=indiceTardeR)
-    tardeR.rename(columns={0:'REPROBACIÓN P1(%)'}, inplace=True)
-
-    for i in range (0, len(tarde)):
-        tardeR.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeR2 = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P2']<=5]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeR2.append(porcentaje)
-
-    tardeR2=pd.DataFrame(data=indiceTardeR2)
-    tardeR2.rename(columns={0:'REPROBACIÓN P2(%)'}, inplace=True)
-
-    for i in range (0, len(tarde)):
-        tardeR2.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeR3 = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P3']<=5]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeR3.append(porcentaje)
-
-    tardeR3=pd.DataFrame(data=indiceTardeR3)
-    tardeR3.rename(columns={0:'REPROBACIÓN P3(%)'}, inplace=True)
-
-    for i in range (0, len(tardeR3)):
-        tardeR3.rename(index={i:int(pruebast[i])}, inplace=True)
-
-    indiceTardeRFin = []
-    for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['FIN']<=5]
-        if segundoGrupo.empty:
-            continue
-        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
-        indiceTardeRFin.append(porcentaje)
-
-    tardeRFin=pd.DataFrame(data=indiceTardeRFin)
-    tardeRFin.rename(columns={0:'REPROBACIÓN FINAL(%)'}, inplace=True)
-
-    for i in range (0, len(tardeRFin)):
-        tardeRFin.rename(index={i:int(pruebast[i])}, inplace=True)
-
     st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN MATUTINO")
     df = pd.concat([mañana, mañanaR, mañanap2,  mañanaR2, mañanap3, mañanaR3, mañanafin, mañanaRFin], axis=1)
     df
-    st.subheader("INDICE DE APROBACIÓN Y REPROBRACIÓN VESPERTINO")
-    dc = pd.concat([tarde, tardeR, tardeP2, tardeR2, tardeP3, tardeR3, tardeFin, tardeRFin], axis=1)
-    dc
+
+    st.bar_chart(df['APROBACIÓN P1(%)'])
+    st.bar_chart(df['REPROBACIÓN P1(%)'])
+    st.bar_chart(df['APROBACIÓN P2(%)'])
+    st.bar_chart(df['REPROBACIÓN P2(%)'])
+    st.bar_chart(df['APROBACIÓN P3(%)'])
+    st.bar_chart(df['REPROBACIÓN P3(%)'])
+    st.bar_chart(df['APROBACIÓN FIN(%)'])
+    st.bar_chart(df['REPROBACIÓN FIN(%)'])
 
 #INDICE APROBACIÓN Y REPROBACIÓN POR ASIGNATURA 
 def AprobacionM(): 
@@ -586,6 +619,20 @@ def AprobacionM():
     st.subheader("INDICE APROBACIÓN Y REPROBACIÓN POR ASIGNATURA")
     ma = pd.concat([materia1, materiar1, materia2, materiar2, materia3, materiar3, materiafin,  materiarfin], axis=1)
     ma
+    st.bar_chart(ma['Aprobación P1(%)'])
+    st.bar_chart(ma['Reprobación P1(%)'])
+    st.bar_chart(ma['Aprobación P2(%)'])
+    st.bar_chart(ma['Reprobación P2(%)'])
+    st.bar_chart(ma['Aprobación P3(%)'])
+    st.bar_chart(ma['Reprobación P3(%)'])
+    st.bar_chart(ma['Aprobación FIN(%)'])
+    st.bar_chart(ma['Reprobación FIN(%)'])
+    
+    #axis = ma.plot.barh(rot=0)
+    #print(axis)
+    #plt.show()
+    #st.pyplot()
+    
 
 #INDICE APROBACIÓN Y REPROBACIÓN POR PROFESOR 
 def AprobacionPro():
@@ -699,6 +746,15 @@ def AprobacionPro():
     pr = pd.concat([profesor1, profesorR1, profesor2, profesorR2, profesor3, profesorR3, profesorfin, profesorFin], axis=1)
     pr
 
+    st.bar_chart(pr['Aprobación P1(%)'])
+    st.bar_chart(pr['Reprobación P1(%)'])
+    st.bar_chart(pr['Aprobación P2(%)'])
+    st.bar_chart(pr['Reprobación P2(%)'])
+    st.bar_chart(pr['Aprobación P3(%)'])
+    st.bar_chart(pr['Reprobación P3(%)'])
+    st.bar_chart(pr['Aprobación FIN(%)'])
+    st.bar_chart(pr['Reprobación FIN(%)'])
+
 #INDICE APROBACIÓN Y REPROBACIÓN POR CARRERA 
 def AprobacionCa():
     Carrera = []
@@ -810,6 +866,15 @@ def AprobacionCa():
     cr = pd.concat([carrera1, carrera1R, carrera2,  carrera2R, carrera3, carrera3R, carrerafin, carreraFinR], axis=1)
     cr
 
+    st.bar_chart(cr['Aprobación P1(%)'])
+    st.bar_chart(cr['Reprobación P1(%)'])
+    st.bar_chart(cr['Aprobación P2(%)'])
+    st.bar_chart(cr['Reprobación P2(%)'])
+    st.bar_chart(cr['Aprobación P3(%)'])
+    st.bar_chart(cr['Reprobación P3(%)'])
+    st.bar_chart(cr['Aprobación FIN(%)'])
+    st.bar_chart(cr['Reprobación FIN(%)'])
+
 #CASOS CRITICOS
 def CasosCriticos():
     Fin=datos.loc[datos['FIN']<=5]
@@ -817,7 +882,7 @@ def CasosCriticos():
     CasosC=[]
 
     if Fin.empty:
-        print("")
+        st.warning('No hay valores en la columna FIN')
     else:
         for i in range(0, len(Fin)):
             numeroControl = Fin['Número de control'].unique()
@@ -844,12 +909,14 @@ def CasosCriticos():
         caso1
         critico
 
+    
+
 #CASOS DE ABANDONO
 def CasosAbandono(): 
     Fin=datos.loc[datos['FIN']<=5]
     CasosA = []
     if Fin.empty:
-        print("")
+        st.warning('No hay valores en la columna FIN')
     else:
         for i in range(0, len(Fin)):
             numeroControl = Fin['Número de control'].unique()
@@ -875,6 +942,7 @@ def CasosAbandono():
         caso2
         
         abandono
+        
 
 
 #FILTRO DATOS
@@ -983,17 +1051,21 @@ def opciones():
             CasosAbandono()
     elif menu =='Aprobación y reprobación':
             st.subheader("Indice de aprobación y reprobación: ")
-            opcion = ["Plantel", "Turno", "Asignatura", "Profesor"]
+            opcion = ["Plantel", "Turno Matutino", "Turno Vespertino", "Asignatura", "Profesor", "Carrera"]
             choice = st.selectbox("Elija la opción deseada: ", opcion)
             try:
                 if choice == "Plantel":
                     AprobacionP()
-                elif choice == "Turno":
+                elif choice == "Turno Matutino":
                     AprobacionG()
+                elif choice == "Turno Vespertino":
+                    AprobacionGT()
                 elif choice == "Asignatura":
                     AprobacionM()
                 elif choice == "Profesor":
                     AprobacionPro()
+                elif choice == "Carrera":
+                    AprobacionCa()
             except Exception as e:
                 print(e)
                 st.write("Porfavor elija una opción adecuada")
@@ -1025,4 +1097,3 @@ def graficoVesp():
 
 #DESPLIEGE DEL PROGRAMA
 menu()
-#opciones()
