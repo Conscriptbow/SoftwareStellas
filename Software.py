@@ -1,16 +1,10 @@
-from ast import increment_lineno
 import time
 import streamlit as st
 import plotly_express as px
 import pandas as pd
 import sqlite3
 import numpy as np
-from streamlit.state.session_state import WidgetArgs
-import plotly.graph_objects as go
-import altair as alt
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+
 
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
@@ -88,8 +82,10 @@ def sign():
 #BARRA LATERAL --MENU--
 def menu():
     home()
-    md_logo3 = 'https://i.ibb.co/VVLf7Xz/STELLASMARGEN.png'
+    md_logo3 = 'https://i.ibb.co/52zxqJG/b28e0dcf-e9ac-480b-910f-822372caf2f6-preview-rev-1.png'
     st.sidebar.image(md_logo3, width=200)
+    st.sidebar.markdown('---')
+    st.sidebar.markdown("<h1 style='text-align: center;'>STELLAS COMPANY | V1.01</h1>", unsafe_allow_html=True)
     st.sidebar.markdown('---')
     st.sidebar.markdown("<h1 style='text-align: center;'>MENU</h1>", unsafe_allow_html=True)
     menu = ["Acceder", "Sign Up", "Cerrar Sesión"]
@@ -99,8 +95,6 @@ def menu():
         sign()
     elif choice == "Acceder":
         acceder()
-
-    st.sidebar.markdown("<h1 style='text-align: center;'>STELLAS COMPANY | V1.01</h1>", unsafe_allow_html=True)
 
 #INDEICE APROBACION Y REPROBACION POR PLANTEL
 def AprobacionP():
@@ -195,7 +189,7 @@ def AprobacionP():
     for i in range (0, len(plantelRFin)):
         plantelRFin.rename(index={i:pruebas[i]}, inplace=True)
     ###########################################################################
-    st.subheader("ÍNDICE DE APROBACIÓN Y REPROBACIÓN POR PLANTEL")
+    st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN POR PLANTEL")
     pf = pd.concat([plantel, plantelR, plantel2, plantelR2, plantel3, plantelR3, plantelFin, plantelRFin], axis=1)
     pf
     st.bar_chart(pf['APROBACIÓN P1(%)'])
@@ -346,7 +340,7 @@ def AprobacionGT():
     for i in range (0, len(tardeRFin)):
         tardeRFin.rename(index={i:int(pruebast[i])}, inplace=True)
     
-    st.subheader("ÍNDICE DE APROBACIÓN Y REPROBRACIÓN VESPERTINO")
+    st.subheader("INDICE DE APROBACIÓN Y REPROBRACIÓN VESPERTINO")
     dc = pd.concat([tarde, tardeR, tardeP2, tardeR2, tardeP3, tardeR3, tardeFin, tardeRFin], axis=1)
     dc
 
@@ -496,7 +490,7 @@ def AprobacionG():
     for i in range (0, len(mañanaRFin)):
         mañanaRFin.rename(index={i:int(pruebasm[i])}, inplace=True)
 
-    st.subheader("ÍNDICE DE APROBACIÓN Y REPROBACIÓN MATUTINO")
+    st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN MATUTINO")
     df = pd.concat([mañana, mañanaR, mañanap2,  mañanaR2, mañanap3, mañanaR3, mañanafin, mañanaRFin], axis=1)
     df
 
@@ -616,7 +610,7 @@ def AprobacionM():
     for i in range (0, len(materiarfin)):
         materiarfin.rename(index={i:str(pruebasA[i])}, inplace=True)
 
-    st.subheader("ÍNDICE APROBACIÓN Y REPROBACIÓN POR ASIGNATURA")
+    st.subheader("INDICE APROBACIÓN Y REPROBACIÓN POR ASIGNATURA")
     ma = pd.concat([materia1, materiar1, materia2, materiar2, materia3, materiar3, materiafin,  materiarfin], axis=1)
     ma
     st.bar_chart(ma['Aprobación P1(%)'])
@@ -627,6 +621,11 @@ def AprobacionM():
     st.bar_chart(ma['Reprobación P3(%)'])
     st.bar_chart(ma['Aprobación FIN(%)'])
     st.bar_chart(ma['Reprobación FIN(%)'])
+    
+    #axis = ma.plot.barh(rot=0)
+    #print(axis)
+    #plt.show()
+    #st.pyplot()
     
 
 #INDICE APROBACIÓN Y REPROBACIÓN POR PROFESOR 
@@ -737,7 +736,7 @@ def AprobacionPro():
     for i in range (0, len(profesorFin)):
         profesorFin.rename(index={i:str(pruebasA[i])}, inplace=True)
 
-    st.subheader("ÍNDICE DE APROBACIÓN Y REPROBACIÓN POR PROFESOR")
+    st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN POR PROFESOR")
     pr = pd.concat([profesor1, profesorR1, profesor2, profesorR2, profesor3, profesorR3, profesorfin, profesorFin], axis=1)
     pr
 
@@ -857,7 +856,7 @@ def AprobacionCa():
     for i in range (0, len(carreraFinR)):
         carreraFinR.rename(index={i:str(pruebasA[i])}, inplace=True)
 
-    st.subheader("ÍNDICE DE APROBACIÓN Y REPROBACIÓN POR CARRERA")
+    st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN POR CARRERA")
     cr = pd.concat([carrera1, carrera1R, carrera2,  carrera2R, carrera3, carrera3R, carrerafin, carreraFinR], axis=1)
     cr
 
@@ -900,9 +899,11 @@ def CasosCriticos():
         rf.rename(columns={0:'Nombre'}, inplace=True)
         lista1 = [rf, rc]
         caso1 = pd.concat(lista1, axis=1)
-        st.subheader("CASOS CRÍTICOS")
+        st.subheader("CASOS CRITICOS")
         caso1
         critico
+
+    
 
 #CASOS DE ABANDONO
 def CasosAbandono(): 
@@ -1043,7 +1044,7 @@ def opciones():
     elif menu == 'Casos de abandono':
             CasosAbandono()
     elif menu =='Aprobación y reprobación':
-            st.subheader("Índice de aprobación y reprobación: ")
+            st.subheader("Indice de aprobación y reprobación: ")
             opcion = ["Plantel", "Turno Matutino", "Turno Vespertino", "Asignatura", "Profesor", "Carrera"]
             choice = st.selectbox("Elija la opción deseada: ", opcion)
             try:
